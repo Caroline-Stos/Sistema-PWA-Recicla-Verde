@@ -117,7 +117,7 @@ function definirModalidadePorPorte(porteVolume) {
 }
 
 function contemPayloadInvalido(texto) {
-  return /<script|<\/script|javascript:/i.test(String(texto || ''));
+  return /<script|<\/script|javascript:|<iframe|<object|onerror\s*=|onload\s*=|onclick\s*=/i.test(String(texto || ''));
 }
 
 /**

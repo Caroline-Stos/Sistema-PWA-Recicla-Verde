@@ -11,13 +11,27 @@ try:
 except ImportError:
     from models import ModalidadeColeta, PerfilUsuario, PorteVolume, StatusSolicitacao
 
-PADRAO_XSS_INVALIDO = re.compile(r"<script|</script|javascript:", re.IGNORECASE)
+PADRAO_XSS_INVALIDO = re.compile(
+    r"<script|</script|javascript:|<iframe|<object|onerror\s*=|onload\s*=|onclick\s*=",
+    re.IGNORECASE,
+)
 MATERIAIS_PERMITIDOS = {"Papelão", "Plástico", "Vidro", "Metal"}
 
 
 class LoginRequest(BaseModel):
     telefone: str = Field(..., min_length=8, max_length=15, examples=["(11) 91234-5678"])
     senha: str = Field(..., min_length=8, max_length=64, examples=["Recicla2026"])
+
+    @field_validator("telefone")
+    @classmethod
+    def validar_telefone(cls, v: str) -> str:
+        limpo = v.strip()
+        if PADRAO_XSS_INVALIDO.search(limpo):
+            raise ValueError("Caracteres inválidos detectados no telefone.")
+        digitos = re.sub(r"\D", "", limpo)
+        if len(digitos) < 10 or len(digitos) > 11:
+            raise ValueError("Informe um número de telefone válido com DDD (10 ou 11 dígitos).")
+        return limpo
 
 
 class UsuarioResponse(BaseModel):
