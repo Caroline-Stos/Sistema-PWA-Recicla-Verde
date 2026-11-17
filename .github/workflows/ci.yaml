@@ -1,0 +1,41 @@
+name: CI — Testes Automatizados e Validação CRVV
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-and-validate:
+    name: Testes Front-End e Back-End (FastAPI)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Instalar dependências do projeto
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verificar estrutura de pastas e módulos
+        run: |
+          test -f frontend/index.html
+          test -f frontend/styles.css
+          test -f frontend/app.js
+          test -f backend/main.py
+          test -f backend/models.py
+          test -f backend/schemas.py
+          test -f backend/services.py
+          test -f tests/autoTests.py
+
+      - name: Executar suíte de testes automatizados (Pytest)
+        run: pytest -v
