@@ -1,0 +1,140 @@
+/* ==========================================================================
+   ESTILOS DE ALTO CONTRASTE E ERGONOMIA EM CAMPO (USO COM LUVAS E SOB SOL)
+   ========================================================================== */
+:root {
+  --bg-page: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --text-main: #111111;
+  --border-strong: #0F172A;
+  --green-primary: #0F5132;
+  --green-hover: #0A3622;
+  --blue-status: #1E3A8A;
+  --amber-text: #78350F;
+  --amber-bg: #FEF3C7;
+  --amber-border: #B45309;
+  --red-text: #7F1D1D;
+  --red-bg: #FEE2E2;
+  --red-border: #B91C1C;
+  --focus-ring: #1D4ED8;
+}
+
+html {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Foco visível rigoroso de 3px solid para navegação por teclado */
+*:focus-visible {
+  outline: 3px solid var(--focus-ring) !important;
+  outline-offset: 2px !important;
+}
+
+/* Alvos de toque mínimos de 48x48px a 52px com espaçamento seguro */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.touch-target-lg {
+  min-height: 52px;
+  min-width: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bordas de alto contraste para leitura sob luz solar intensa */
+.card-hc {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-strong);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 0 0 var(--border-strong);
+}
+
+.input-hc {
+  background-color: #FFFFFF;
+  border: 2px solid var(--border-strong);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 600;
+  min-height: 50px;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  width: 100%;
+}
+
+.input-hc:focus {
+  border-color: var(--focus-ring);
+  background-color: #F0F9FF;
+}
+
+/* Botões operacionais com feedback tátil/visual nítido */
+.btn-primary-hc {
+  background-color: var(--green-primary);
+  color: #FFFFFF;
+  border: 2px solid #052E16;
+  box-shadow: 0 3px 0 0 #052E16;
+  font-weight: 800;
+  border-radius: 0.625rem;
+  transition: transform 0.08s ease, background-color 0.15s ease;
+}
+
+.btn-primary-hc:hover {
+  background-color: var(--green-hover);
+}
+
+.btn-primary-hc:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 0 #052E16;
+}
+
+.btn-blue-hc {
+  background-color: var(--blue-status);
+  color: #FFFFFF;
+  border: 2px solid #0F172A;
+  box-shadow: 0 3px 0 0 #0F172A;
+  font-weight: 800;
+  border-radius: 0.625rem;
+}
+
+.btn-secondary-hc {
+  background-color: #FFFFFF;
+  color: var(--text-main);
+  border: 2px solid var(--border-strong);
+  box-shadow: 0 2px 0 0 var(--border-strong);
+  font-weight: 700;
+  border-radius: 0.625rem;
+}
+
+.btn-secondary-hc:hover {
+  background-color: #F1F5F9;
+}
+
+/* Seleção de checkboxes e rádios ampliados */
+.option-card-hc {
+  border: 2px solid var(--border-strong);
+  background-color: #FFFFFF;
+  color: var(--text-main);
+  border-radius: 0.625rem;
+  min-height: 54px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.option-card-hc.selected {
+  background-color: #ECFDF5;
+  border: 3px solid var(--green-primary);
+  box-shadow: 0 3px 0 0 var(--green-primary);
+}
