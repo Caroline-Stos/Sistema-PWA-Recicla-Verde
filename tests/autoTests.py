@@ -101,6 +101,14 @@ def test_bloqueio_xss_no_cadastro_de_solicitacao():
             porte_volume=PorteVolume.PEQUENO_MEDIO,
         )
 
+    with pytest.raises(ValidationError):
+        SolicitacaoCreate(
+            endereco="Rua B, 20",
+            ponto_referencia='<img src=x onerror="alert(1)">',
+            materiais=["Plástico"],
+            porte_volume=PorteVolume.PEQUENO_MEDIO,
+        )
+
 
 def test_impede_conflito_de_dois_catadores_no_mesmo_chamado():
     # Pedido 1 começa AGUARDANDO -> Primeiro aceite deve funcionar
@@ -163,6 +171,10 @@ def test_endpoint_aceitar_coleta_retorna_409_quando_indisponivel():
 
 
 def test_servir_arquivos_estaticos_frontend():
-    assert client.get("/").status_code == 200
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert resp.headers.get("X-Content-Type-Options") == "nosniff"
+    assert resp.headers.get("X-Frame-Options") == "DENY"
+    assert resp.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
     assert client.get("/styles.css").status_code == 200
     assert client.get("/app.js").status_code == 200

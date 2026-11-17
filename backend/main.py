@@ -4,7 +4,7 @@ Ponto de entrada da API FastAPI da Cooperativa Recicla Vila Verde (CRVV).
 
 from pathlib import Path
 from typing import List, Optional
-from fastapi import FastAPI, HTTPException, Query, status
+from fastapi import FastAPI, HTTPException, Query, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
@@ -68,6 +68,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def adicionar_cabecalhos_seguranca(request: Request, call_next):
+    """Adiciona cabeçalhos HTTP de segurança contra Clickjacking, MIME-sniffing e XSS."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
 
 
 @app.post("/api/auth/login", response_model=UsuarioResponse, tags=["Autenticação"])
