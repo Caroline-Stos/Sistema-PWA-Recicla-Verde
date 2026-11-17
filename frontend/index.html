@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cooperativa Recicla Vila Verde (CRVV) — Coleta Seletiva</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonte Inter de alta legibilidade -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Regras de Alto Contraste e Botões -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="text-[#111111] antialiased selection:bg-[#FEF08A] selection:text-[#111111]">
+
+  <!-- ==========================================================================
+       1. CABEÇALHO INSTITUCIONAL DA CRVV
+       ========================================================================== -->
+  <header class="bg-white border-b-2 border-[#0F172A] px-4 py-3.5">
+    <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
+      <!-- Identidade Visual CRVV -->
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-lg bg-[#0F5132] border-2 border-[#0F172A] flex items-center justify-center text-white shrink-0" aria-hidden="true">
+          <!-- Logotipo SVG de Reciclagem -->
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-[#111111] leading-snug">
+            Cooperativa Recicla Vila Verde (CRVV)
+          </h1>
+          <p class="text-xs sm:text-sm font-semibold text-slate-700">
+            Coleta Seletiva Comunitária Porta a Porta
+          </p>
+        </div>
+      </div>
+
+      <!-- Indicador do Usuário Logado e Botão Sair (48x48px mínimo) -->
+      <div id="headerSessionBox" class="hidden items-center gap-2.5">
+        <div class="text-right hidden sm:block">
+          <p id="headerUserName" class="text-xs font-extrabold text-[#111111]"></p>
+          <p id="headerUserRole" class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-[#0F5132] border border-[#0F5132] inline-block mt-0.5"></p>
+        </div>
+        <button type="button" id="btnLogout" onclick="handleLogout()"
+          class="touch-target px-3.5 py-2 rounded-lg border-2 border-[#0F172A] bg-[#FEE2E2] text-[#7F1D1D] font-extrabold text-sm hover:bg-red-200 flex items-center gap-1.5"
+          aria-label="Sair da conta">
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       CONTEÚDO PRINCIPAL — APLICATIVO COMUNITÁRIO CRVV
+       ========================================================================== -->
+  <main class="flex-1 w-full max-w-xl mx-auto px-4 py-5 space-y-6">
+
+    <!-- ========================================================================
+         3. TELA 1: ENTRADA PRINCIPAL / PORTAL DE ACESSO
+         ======================================================================== -->
+    <section id="screen1" aria-labelledby="screen1Title" class="space-y-5">
+      <div class="card-hc p-5 space-y-5">
+        <div class="border-b-2 border-slate-200 pb-3">
+          <span class="inline-block text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded bg-emerald-100 text-[#0F5132] border border-[#0F5132] mb-2">
+            Portal de Acesso
+          </span>
+          <h2 id="screen1Title" class="text-xl font-extrabold text-[#111111]">
+            Entrar na Plataforma da Cooperativa
+          </h2>
+          <p class="text-sm font-semibold text-slate-700 mt-1">
+            Acesse com seu telefone para pedir uma coleta em casa, atender chamados na rua ou organizar as saídas do caminhão.
+          </p>
+        </div>
+
+        <!-- Caixa de Alerta Multissensorial (Cor + Ícone SVG + Texto Claro) -->
+        <div id="loginErrorBox" role="alert" class="hidden p-4 rounded-lg border-2 border-[#B91C1C] bg-[#FEE2E2] text-[#7F1D1D]">
+          <div class="flex items-start gap-3">
+            <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <p id="loginErrorTitle" class="font-extrabold text-sm uppercase tracking-wide">[!] Não foi possível entrar</p>
+              <p id="loginErrorText" class="text-sm font-semibold mt-1"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulário de Login Principal -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4" novalidate>
+          <div>
+            <label for="loginPhone" class="block text-base font-extrabold text-[#111111] mb-1.5">
+              Telefone (Login) <span class="text-[#B91C1C]">*</span>
+            </label>
+            <input
+              type="tel"
+              id="loginPhone"
+              name="telefone"
+              required
+              maxlength="15"
+              placeholder="(11) 98765-4321"
+              value="(11) 91234-5678"
+              oninput="formatPhoneInput(this)"
+              class="input-hc"
+            />
+          </div>
+
+          <div>
+            <label for="loginPassword" class="block text-base font-extrabold text-[#111111] mb-1.5">
+              Senha <span class="text-[#B91C1C]">*</span>
+            </label>
+            <div class="flex gap-2">
+              <input
+                type="password"
+                id="loginPassword"
+                name="senha"
+                required
+                minlength="8"
+                maxlength="64"
+                value="Recicla2026"
+                placeholder="Digite sua senha"
+                class="input-hc flex-1"
+              />
+              <button
+                type="button"
+                id="btnTogglePass"
+                onclick="togglePasswordVisibility()"
+                class="touch-target px-4 btn-secondary-hc text-sm font-extrabold shrink-0"
+                aria-label="Mostrar ou ocultar senha">
+                Mostrar
+              </button>
+            </div>
+          </div>
+
+          <!-- Botão Principal Entrar no Sistema (100% largura, 52px altura, #0F5132 com texto #FFFFFF) -->
+          <div class="pt-2 space-y-3">
+            <button type="submit" class="touch-target-lg w-full btn-primary-hc text-base tracking-wide gap-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              <span>Entrar no Sistema</span>
+            </button>
+
+            <button type="button" onclick="toggleQuickRegisterBox()"
+              class="touch-target w-full btn-secondary-hc text-sm font-extrabold gap-2">
+              <svg class="w-5 h-5 text-[#0F5132]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+              </svg>
+              <span>Criar Conta de Morador</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Painel de Cadastro Rápido de Morador (Oculto por padrão, abre ao tocar em Criar Conta) -->
+        <div id="quickRegisterBox" class="hidden p-4 rounded-lg border-2 border-[#0F5132] bg-[#ECFDF5] space-y-3">
+          <h3 class="text-base font-extrabold text-[#0F5132]">
+            Novo Cadastro de Morador — Bairro Vila Verde
+          </h3>
+          <p class="text-xs sm:text-sm font-semibold text-slate-800">
+            Cadastre seu telefone para solicitar a retirada gratuita de materiais recicláveis secos na sua rua.
+          </p>
+          <div class="space-y-3">
+            <div>
+              <label for="regName" class="block text-sm font-extrabold text-[#111111] mb-1">Seu Nome</label>
+              <input type="text" id="regName" value="Ana Souza" class="input-hc bg-white" />
+            </div>
+            <button type="button" onclick="fillDemoLogin('MORADOR'); handleLoginSubmit(new Event('submit'));"
+              class="touch-target w-full btn-primary-hc text-sm">
+              Concluir Cadastro e Solicitar Coleta
+            </button>
+          </div>
+        </div>
+
+        <!-- Atalhos Rápidos de Preenchimento com os Perfis da Cooperativa -->
+        <div class="bg-[#F1F5F9] border-2 border-[#0F172A] rounded-lg p-4 space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-1">
+            <p class="text-xs font-extrabold uppercase tracking-wide text-[#111111]">
+              Contas Cadastradas (Toque para preencher):
+            </p>
+            <button type="button" onclick="simulateInvalidLogin()"
+              class="text-xs font-extrabold underline text-[#7F1D1D] hover:text-red-900 py-1">
+              Testar senha incorreta
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 gap-2">
+            <button type="button" onclick="fillDemoLogin('MORADOR')"
+              class="touch-target w-full px-3.5 py-2 text-left rounded-md border-2 border-[#0F172A] bg-white hover:bg-emerald-50 flex items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-[#0F5132] border border-[#0F5132]">Moradora</span>
+                <span class="text-sm font-extrabold text-[#111111] ml-1.5">Ana Souza</span>
+              </div>
+              <span class="text-xs font-mono font-bold text-slate-800">(11) 98765-4321</span>
+            </button>
+
+            <button type="button" onclick="fillDemoLogin('CATADOR')"
+              class="touch-target w-full px-3.5 py-2 text-left rounded-md border-2 border-[#0F172A] bg-white hover:bg-blue-50 flex items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-blue-100 text-[#1E3A8A] border border-[#1E3A8A]">Catador</span>
+                <span class="text-sm font-extrabold text-[#111111] ml-1.5">Carlos Alberto</span>
+              </div>
+              <span class="text-xs font-mono font-bold text-slate-800">(11) 91234-5678</span>
+            </button>
+
+            <button type="button" onclick="fillDemoLogin('COORDENACAO')"
+              class="touch-target w-full px-3.5 py-2 text-left rounded-md border-2 border-[#0F172A] bg-white hover:bg-amber-50 flex items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-amber-100 text-[#78350F] border border-[#78350F]">Coordenação</span>
+                <span class="text-sm font-extrabold text-[#111111] ml-1.5">Galpão CRVV</span>
+              </div>
+              <span class="text-xs font-mono font-bold text-slate-800">(11) 99988-7766</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         4. TELA 2: EXECUÇÃO DA FUNCIONALIDADE CENTRAL (MORADOR / CATADOR / COORDENAÇÃO)
+         ======================================================================== -->
+    <section id="screen2" aria-labelledby="screen2MainHeading" class="hidden space-y-5">
+
+      <!-- Seletor Rápido de Visão Operacional na Tela 2 -->
+      <div class="card-hc p-3.5 bg-slate-100">
+        <p id="screen2MainHeading" class="text-xs font-extrabold uppercase text-[#111111] mb-2">
+          Alternar Visão de Uso:
+        </p>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" id="tabRoleMorador" onclick="switchDemoMode('TELA_2_MORADOR')"
+            class="touch-target px-2 py-2 rounded-md border-2 border-[#0F172A] font-extrabold text-xs sm:text-sm text-center">
+            Morador
+          </button>
+          <button type="button" id="tabRoleCatador" onclick="switchDemoMode('TELA_2_CATADOR')"
+            class="touch-target px-2 py-2 rounded-md border-2 border-[#0F172A] font-extrabold text-xs sm:text-sm text-center">
+            Catador (Rua)
+          </button>
+          <button type="button" id="tabRoleCoord" onclick="switchDemoMode('TELA_2_COORD')"
+            class="touch-target px-2 py-2 rounded-md border-2 border-[#0F172A] font-extrabold text-xs sm:text-sm text-center">
+            Coordenação
+          </button>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           VISÃO MORADOR: SOLICITAR COLETA
+           ====================================================================== -->
+      <div id="viewMorador" class="card-hc p-5 space-y-5 hidden">
+        <div class="border-b-2 border-slate-200 pb-3">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-extrabold bg-emerald-100 text-[#0F5132] border border-[#0F5132]">
+            [●] Área do Morador — Ana Souza
+          </span>
+          <h2 class="text-xl font-extrabold text-[#111111] mt-1.5">
+            Solicitar Coleta de Recicláveis
+          </h2>
+          <p class="text-sm font-semibold text-slate-700 mt-0.5">
+            Preencha os dados abaixo para avisar a cooperativa antes de colocar os sacos na calçada.
+          </p>
+        </div>
+
+        <!-- Caixa de Alerta de Validação do Formulário -->
+        <div id="formMoradorError" role="alert" class="hidden p-4 rounded-lg border-2 border-[#B91C1C] bg-[#FEE2E2] text-[#7F1D1D]">
+          <div class="flex items-start gap-2.5">
+            <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p class="font-extrabold text-sm uppercase">[!] Verifique os dados do pedido:</p>
+              <p id="formMoradorErrorText" class="text-sm font-semibold mt-1"></p>
+            </div>
+          </div>
+        </div>
+
+        <form id="moradorForm" onsubmit="handleCreateRequest(event)" class="space-y-5" novalidate>
+          <!-- Campo Endereço Completo com Rótulo Persistente -->
+          <div>
+            <label for="inputEndereco" class="block text-base font-extrabold text-[#111111] mb-1.5">
+              Endereço Completo <span class="text-[#B91C1C]">*</span>
+            </label>
+            <input
+              type="text"
+              id="inputEndereco"
+              required
+              maxlength="200"
+              value="Rua das Acácias, 142"
+              placeholder="Ex: Rua das Acácias, 142"
+              class="input-hc"
+            />
+          </div>
+
+          <!-- Campo Ponto de Referência com Rótulo Persistente -->
+          <div>
+            <label for="inputReferencia" class="block text-base font-extrabold text-[#111111] mb-1.5">
+              Ponto de Referência
+            </label>
+            <input
+              type="text"
+              id="inputReferencia"
+              maxlength="100"
+              value="Portão azul"
+              placeholder="Ex: Portão azul, ao lado da padaria"
+              class="input-hc"
+            />
+          </div>
+
+          <!-- Seleção de Tipo de Material Reciclável (Botões grandes >= 48px, espaçamento 8px e ícones SVG) -->
+          <fieldset class="space-y-2">
+            <legend class="block text-base font-extrabold text-[#111111] mb-1">
+              Tipo de Material Reciclável <span class="text-[#B91C1C]">*</span>
+            </legend>
+            <p class="text-xs font-semibold text-slate-700">
+              Toque nos materiais secos disponíveis para retirada:
+            </p>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <!-- Papelão -->
+              <label class="option-card-hc selected p-3 flex items-center gap-2.5" id="matCardPapelao">
+                <input type="checkbox" name="material" value="Papelão" checked onchange="toggleMaterialCard(this, 'matCardPapelao')" class="w-5 h-5 accent-[#0F5132] shrink-0" />
+                <svg class="w-5 h-5 text-[#0F5132] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <span class="font-extrabold text-sm sm:text-base">Papelão</span>
+              </label>
+
+              <!-- Plástico -->
+              <label class="option-card-hc selected p-3 flex items-center gap-2.5" id="matCardPlastico">
+                <input type="checkbox" name="material" value="Plástico" checked onchange="toggleMaterialCard(this, 'matCardPlastico')" class="w-5 h-5 accent-[#0F5132] shrink-0" />
+                <svg class="w-5 h-5 text-[#0F5132] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span class="font-extrabold text-sm sm:text-base">Plástico</span>
+              </label>
+
+              <!-- Vidro -->
+              <label class="option-card-hc p-3 flex items-center gap-2.5" id="matCardVidro">
+                <input type="checkbox" name="material" value="Vidro" onchange="toggleMaterialCard(this, 'matCardVidro')" class="w-5 h-5 accent-[#0F5132] shrink-0" />
+                <svg class="w-5 h-5 text-[#0F5132] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                <span class="font-extrabold text-sm sm:text-base">Vidro</span>
+              </label>
+
+              <!-- Metal -->
+              <label class="option-card-hc p-3 flex items-center gap-2.5" id="matCardMetal">
+                <input type="checkbox" name="material" value="Metal" onchange="toggleMaterialCard(this, 'matCardMetal')" class="w-5 h-5 accent-[#0F5132] shrink-0" />
+                <svg class="w-5 h-5 text-[#0F5132] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+                <span class="font-extrabold text-sm sm:text-base">Metal</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Seleção de Porte do Volume em Blocos Grandes (52px+) -->
+          <fieldset class="space-y-2.5">
+            <legend class="block text-base font-extrabold text-[#111111]">
+              Porte do Volume <span class="text-[#B91C1C]">*</span>
+            </legend>
+            <div class="grid grid-cols-1 gap-2.5">
+              <!-- Opção Pequeno / Médio -->
+              <label id="porteCardPequeno" class="option-card-hc selected p-3.5 flex items-start gap-3">
+                <input type="radio" name="porte_volume" value="Pequeno / Médio" checked onchange="updateModalidadePreview()" class="w-6 h-6 mt-0.5 accent-[#0F5132] shrink-0" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <span class="font-extrabold text-base text-[#111111]">Pequeno / Médio (Até 3 sacos)</span>
+                    <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-[#0F5132] border border-[#0F5132]">
+                      Carrinho Manual
+                    </span>
+                  </div>
+                  <p class="text-xs sm:text-sm font-semibold text-slate-700 mt-0.5">
+                    Sacos comuns ou caixas leves. Direcionado para o catador que estiver mais próximo na rua.
+                  </p>
+                </div>
+              </label>
+
+              <!-- Opção Grande Volume -->
+              <label id="porteCardGrande" class="option-card-hc p-3.5 flex items-start gap-3">
+                <input type="radio" name="porte_volume" value="Grande Volume" onchange="updateModalidadePreview()" class="w-6 h-6 mt-0.5 accent-[#0F5132] shrink-0" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <span class="font-extrabold text-base text-[#111111]">Grande Volume (Muitos sacos / Caixas)</span>
+                    <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-amber-100 text-[#78350F] border border-[#78350F]">
+                      Caminhão da Cooperativa
+                    </span>
+                  </div>
+                  <p class="text-xs sm:text-sm font-semibold text-slate-700 mt-0.5">
+                    Descarte de comércios, condomínios ou cargas volumosas. Agendado para o veículo do galpão.
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            <!-- Aviso Automático em Tempo Real da Modalidade de Atendimento -->
+            <div id="modalidadePreviewBox" class="p-3.5 rounded-lg border-2 border-[#0F5132] bg-[#ECFDF5] text-[#0F5132] text-xs sm:text-sm font-extrabold flex items-center gap-2.5">
+              <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span id="modalidadePreviewText">
+                Atendimento por Carrinho Manual: seu pedido entrará imediatamente na fila dos catadores da rua.
+              </span>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="touch-target-lg w-full btn-primary-hc text-base tracking-wide gap-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Solicitar Coleta</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- ======================================================================
+           VISÃO CATADOR: FILA DE COLETAS DA RUA (CARRINHO MANUAL)
+           ====================================================================== -->
+      <div id="viewCatador" class="space-y-4 hidden">
+        <div class="card-hc p-4 bg-white space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-extrabold bg-blue-100 text-[#1E3A8A] border border-[#1E3A8A]">
+              [●] Cooperado em Rota: Carlos Alberto
+            </span>
+            <button type="button" onclick="refreshCatadorQueue()"
+              class="touch-target px-3 py-1.5 btn-secondary-hc text-xs font-extrabold gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Atualizar Fila</span>
+            </button>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-extrabold text-[#111111]">
+              Fila de Coletas da Rua — Carrinho Manual
+            </h2>
+            <p class="text-sm font-semibold text-slate-700 mt-0.5">
+              Pedidos leves disponíveis no bairro, ordenados do mais antigo para o mais recente. Toque no botão do card para assumir a retirada.
+            </p>
+          </div>
+
+          <!-- Atalho para simular chamado já aceito por outro colega -->
+          <div class="pt-1 flex items-center justify-between flex-wrap gap-2 border-t border-slate-200">
+            <span class="text-xs font-bold text-slate-700">
+              Precisa demonstrar o aviso de pedido já assumido por outro colega?
+            </span>
+            <button type="button" onclick="triggerConflictDemo()"
+              class="touch-target px-3 py-1.5 rounded-md border-2 border-[#B45309] bg-[#FEF3C7] text-[#78350F] font-extrabold text-xs hover:bg-amber-200">
+              [!] Simular Chamado Já Aceito por Colega
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Cards de Coleta da Rua (Renderizada via textContent) -->
+        <div id="catadorQueueContainer" class="space-y-4" aria-live="polite"></div>
+      </div>
+
+      <!-- ======================================================================
+           VISÃO COORDENAÇÃO: PAINEL DE CARGAS PESADAS (CAMINHÃO)
+           ====================================================================== -->
+      <div id="viewCoord" class="space-y-4 hidden">
+        <div class="card-hc p-4 bg-white space-y-2">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-extrabold bg-amber-100 text-[#78350F] border border-[#78350F]">
+              [■] Equipe do Galpão — Coordenação CRVV
+            </span>
+            <span class="text-xs font-extrabold text-[#0F5132]">
+              Modalidade: Caminhão da Cooperativa
+            </span>
+          </div>
+          <h2 class="text-xl font-extrabold text-[#111111]">
+            Painel de Cargas Pesadas — Caminhão
+          </h2>
+          <p class="text-sm font-semibold text-slate-700">
+            Solicitações de grande volume separadas automaticamente para roteirização do veículo utilitário da cooperativa.
+          </p>
+        </div>
+
+        <!-- Lista de Cargas de Caminhão -->
+        <div id="coordQueueContainer" class="space-y-4" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         5. TELA 3: ALERTAS, CONFIRMAÇÕES E RESULTADOS
+         ======================================================================== -->
+    <section id="screen3" aria-labelledby="screen3Title" class="hidden space-y-5">
+
+      <!-- Seletor Rápido de Cenários de Resultado para Facilitar a Captura de Tela -->
+      <div class="card-hc p-3.5 bg-slate-100 space-y-2">
+        <p class="text-xs font-extrabold uppercase text-[#111111]">
+          Alternar Cenário de Confirmação / Alerta:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button type="button" onclick="renderScreen3Scenario('ACEITE_SUCESSO')"
+            class="touch-target px-3 py-2 rounded border-2 border-[#0F5132] bg-[#ECFDF5] text-[#0F5132] font-extrabold text-xs text-left">
+            [✓] 1. Coleta Aceita (A caminho)
+          </button>
+          <button type="button" onclick="renderScreen3Scenario('CHAMADO_INDISPONIVEL')"
+            class="touch-target px-3 py-2 rounded border-2 border-[#B45309] bg-[#FEF3C7] text-[#78350F] font-extrabold text-xs text-left">
+            [!] 2. Chamado Já Aceito por Outro Catador
+          </button>
+          <button type="button" onclick="renderScreen3Scenario('CONCLUIDO_SUCESSO')"
+            class="touch-target px-3 py-2 rounded border-2 border-[#1E3A8A] bg-blue-50 text-[#1E3A8A] font-extrabold text-xs text-left">
+            [★] 3. Coleta Concluída às 10:45
+          </button>
+          <button type="button" onclick="renderScreen3Scenario('PEDIDO_CRIADO')"
+            class="touch-target px-3 py-2 rounded border-2 border-[#0F5132] bg-white text-[#0F5132] font-extrabold text-xs text-left">
+            [✓] 4. Pedido Registrado (Morador)
+          </button>
+        </div>
+      </div>
+
+      <!-- Banner Principal Multissensorial (Cor + Ícone SVG + Texto Claro) -->
+      <div id="resultAlertBanner" role="status" aria-live="assertive" class="card-hc p-5 space-y-3">
+        <div class="flex items-start gap-3.5">
+          <div id="resultAlertIconBox" class="w-12 h-12 rounded-lg border-2 border-[#0F172A] flex items-center justify-center shrink-0">
+            <!-- Ícone SVG injetado conforme o estado -->
+          </div>
+          <div class="space-y-1 flex-1">
+            <span id="resultAlertTag" class="inline-block text-xs font-extrabold uppercase px-2 py-0.5 rounded border border-current"></span>
+            <h2 id="screen3Title" class="text-xl font-extrabold leading-snug"></h2>
+            <p id="resultAlertMessage" class="text-sm sm:text-base font-semibold"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card de Resumo Detalhado do Chamado -->
+      <div class="card-hc p-5 space-y-4">
+        <div class="flex items-center justify-between border-b-2 border-slate-200 pb-3 flex-wrap gap-2">
+          <h3 class="text-lg font-extrabold text-[#111111]">
+            Resumo do Pedido de Coleta
+          </h3>
+          <span id="resultOrderId" class="font-mono text-sm font-extrabold px-2.5 py-1 rounded bg-slate-200 text-[#111111] border border-[#0F172A]"></span>
+        </div>
+
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <div class="p-3 rounded-lg bg-slate-50 border-2 border-slate-300">
+            <dt class="text-xs font-bold uppercase text-slate-600">Situação Atual</dt>
+            <dd id="resultStatusBadge" class="mt-1 font-extrabold text-base"></dd>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border-2 border-slate-300">
+            <dt class="text-xs font-bold uppercase text-slate-600">Modalidade Atribuída</dt>
+            <dd id="resultModalidade" class="mt-1 font-extrabold text-base text-[#111111]"></dd>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border-2 border-slate-300 sm:col-span-2">
+            <dt class="text-xs font-bold uppercase text-slate-600">Endereço e Ponto de Referência</dt>
+            <dd id="resultEndereco" class="mt-1 font-extrabold text-base text-[#111111]"></dd>
+            <dd id="resultReferencia" class="text-sm font-semibold text-slate-700 mt-0.5"></dd>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border-2 border-slate-300">
+            <dt class="text-xs font-bold uppercase text-slate-600">Material e Porte do Volume</dt>
+            <dd id="resultMaterial" class="mt-1 font-extrabold text-[#111111]"></dd>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border-2 border-slate-300">
+            <dt class="text-xs font-bold uppercase text-slate-600">Responsável pelo Atendimento</dt>
+            <dd id="resultCatador" class="mt-1 font-extrabold text-[#1E3A8A]"></dd>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border-2 border-slate-300 sm:col-span-2">
+            <dt class="text-xs font-bold uppercase text-slate-600">Horários Registrados</dt>
+            <dd id="resultTimestamps" class="mt-1 font-bold text-xs sm:text-sm text-[#111111]"></dd>
+          </div>
+        </dl>
+
+        <!-- Botões de Navegação de 52px -->
+        <div class="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button type="button" onclick="returnToOperationalScreen()"
+            class="touch-target-lg w-full btn-primary-hc text-sm sm:text-base gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>Voltar para a Fila / Novo Pedido</span>
+          </button>
+
+          <button type="button" onclick="handleLogout()"
+            class="touch-target-lg w-full btn-secondary-hc text-sm sm:text-base gap-2 text-[#7F1D1D] border-[#7F1D1D]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Sair da Conta</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Visão Geral dos Pedidos do Dia na Cooperativa -->
+      <div class="card-hc p-4 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <h3 class="text-sm font-extrabold uppercase tracking-wide text-[#111111]">
+            Pedidos Registrados Hoje no Bairro
+          </h3>
+          <span class="text-xs font-bold text-[#0F5132]">Atualizado em tempo real</span>
+        </div>
+        <div id="allOrdersSummaryList" class="space-y-2 text-xs"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       RODAPÉ COMUNITÁRIO DA COOPERATIVA
+       ========================================================================== -->
+  <footer class="bg-white border-t-2 border-[#0F172A] px-4 py-3.5 mt-6">
+    <div class="max-w-xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-bold text-slate-800">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#0F5132]"></span>
+        <span>Cooperativa Recicla Vila Verde (CRVV) • Atendimento das 08h às 17h</span>
+      </div>
+      <div class="text-slate-700">
+        <span>Conexão segura ativa • Bairro Vila Verde</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lógica de navegação e validação no navegador -->
+  <script src="app.js"></script>
+</body>
+</html>
